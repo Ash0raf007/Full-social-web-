@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!---import bootstrap--->
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="./node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <!-- axios-->
+    <script src="./node_modules/axios/dist/axios.js"></script>
+
+    <style>
+      body {
+        background-color: #f0ecff;
+      }
+      .card {
+        margin-top: 10px;
+      }
+      #add-btn {
+        position: fixed;
+        bottom: 5%;
+        right: 7%;
+        height: 70px;
+        width: 70px;
+        font-size: 50px;
+        color: white;
+        border-radius: 100px;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: 0px 10px 10px rgb(0, 0, 0, 0.3);
+      }
+      /* loader css loding*/
+      .lds-ellipsis {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+      }
+      .lds-ellipsis div {
+        position: absolute;
+        top: 33px;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: #e9e4e4;
+        animation-timing-function: cubic-bezier(0, 1, 1, 0);
+      }
+      .lds-ellipsis div:nth-child(1) {
+        left: 8px;
+        animation: lds-ellipsis1 0.6s infinite;
+      }
+      .lds-ellipsis div:nth-child(2) {
+        left: 8px;
+        animation: lds-ellipsis2 0.6s infinite;
+      }
+      .lds-ellipsis div:nth-child(3) {
+        left: 32px;
+        animation: lds-ellipsis2 0.6s infinite;
+      }
+      .lds-ellipsis div:nth-child(4) {
+        left: 56px;
+        animation: lds-ellipsis3 0.6s infinite;
+      }
+      @keyframes lds-ellipsis1 {
+        0% {
+          transform: scale(0);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      @keyframes lds-ellipsis3 {
+        0% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(0);
+        }
+      }
+      @keyframes lds-ellipsis2 {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(24px, 0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+
+
+    <!---loading  -->
+
+    <div  id="loader" style=" background: rgba(128, 128, 128, 0.377);  position: fixed;top:0px;bottom:0px; left: 0px;right: 0px; margin: auto auto; justify-content: center ;display:flex; align-items: center; z-index: 99999; width: 100px ; height: 50px; border-radius: 20px;">
+      <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+
+    </div>
+
+
+    <!---Navbar-->
+
+    <div class="container">
+      <div class="d-flex justify-content-center">
+        <div class="col-9">
+          <nav class="navbar navbar-expand-lg bg-light shadow rounded pt-3">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="index.html">Black-Falcon</a>
+              <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#"
+                      >Home</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a
+                      class="nav-link"
+                      onclick="profileClicked()"
+                      style="cursor: pointer"
+                      >Profile</a
+                    >
+                  </li>
+                </ul>
+                <!-- login user-->
+                <div class="d-flex w-100 justify-content-end" id="login-div">
+                  <button
+                    id="login-btn"
+                    type="button"
+                    class="btn btn-outline-success mx-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#login-modal"
+                  >
+                    Login
+                  </button>
+                  <button
+                    id="register-btn"
+                    type="button"
+                    class="btn btn-outline-success"
+                    data-bs-toggle="modal"
+                    data-bs-target="#register-modal"
+                  >
+                    Register
+                  </button>
+                </div>
+                <!--- logout user-->
+                <div
+                  class="d-flex w-100 justify-content-end align-items-center"
+                  id="logout-div"
+                >
+                  <img
+                    id="nav-userimage"
+                    class="rounded-circle"
+                    style="width: 40px; height: 40px"
+                    src="./assets/avatar.jpg"
+                    alt=""
+                  />
+                  <b id="nav-username">dddddddd</b>
+                  <button
+                    onclick="logout()"
+                    id="logout-btn"
+                    type="button"
+                    class="btn btn-outline-danger mx-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#logout-modal"
+                  >
+                    logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!---registry -->
+
+    <div
+      class="modal fade"
+      id="register-modal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Register New user
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label"
+                  >Profile image</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  id="register-image-input"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="register-name-input"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label"
+                  >User name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="register-username-input"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label"
+                  >password</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="register-password-input"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="registerbtnclick()"
+            >
+              Register
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--- add post button-->
+    <div class="bg-primary" id="add-btn" onclick="addbtnclicked()">+</div>
+
+    <!--- add post button             -          creat-post-modal---->
+
+    <div
+      class="modal fade"
+      id="creat-post-modal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="post-modal-title">
+              Creat A New Post
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label">Title</label>
+                <input type="text" class="form-control" id="post-title-input" />
+                <input type="hidden" id="post-id-input" value="" />
+              </div>
+              <div class="mb-3">
+                <textarea
+                  name=""
+                  id="post-body-input"
+                  style="
+                    width: 100%;
+                    height: 200px;
+                    border-color: gray;
+                    border-radius: 10px;
+                    resize: none;
+                  "
+                ></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label">Image</label>
+                <input type="file" class="form-control" id="post-image-input" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              id="post-model-submit"
+              class="btn btn-primary"
+              onclick="creatPostModal()"
+            >
+              Creat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!----alert when click login ------>
+    <div
+      id="succes-alert"
+      class="show fade"
+      style="
+        position: fixed;
+        z-index: 999999999999;
+        width: 30%;
+        bottom: 0;
+        right: 0;
+      "
+    ></div>
+
+    <!--- log in model-->
+
+    <div
+      class="modal fade"
+      id="login-modal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label"
+                  >User name</label
+                >
+                <input type="text" class="form-control" id="username-input" />
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label"
+                  >password</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password-input"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="loginbtnclick()"
+            >
+              Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!---- delete post model-->
+    <div
+      class="modal fade"
+      id="delete-post-modal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="post-modal-title">
+              Are you sure to delete this post ?
+              <span id="delete-post-title"></span>
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+            <input type="hidden" id="delete-post-id-input" value="" />
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              id="post-model-submit"
+              class="btn btn-danger"
+              onclick="comfirmepostdelete()"
+            >
+              Yes Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--main content-->
+    <div class="container">
+      <!---postes-->
+      <div class="d-flex justify-content-center mt-5">
+        <div class="col-9">
+          <div id="posts">
+            <!----1-->
+            <div class="card shadow">
+              <div class="card-header">
+                <img
+                  src="./assets/avatar.jpg"
+                  alt=""
+                  style="width: 50px; height: 40px"
+                  class="rounded-circle border border-1"
+                />
+                <b>@dsdsl</b>
+              </div>
+              <div class="card-body">
+                <img src="./assets/post.jpg" alt="" style="width: 100%" />
+                <h6>2 min ago</h6>
+                <h5>Hello</h5>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Maiores, ratione!
+                </p>
+                <hr />
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-pen"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"
+                    />
+                  </svg>
+                  <span>3 comments</span>
+                </div>
+              </div>
+            </div>
+            <div class="card shadow">
+              <div class="card-header">
+                <img
+                  src="./assets/avatar.jpg"
+                  alt=""
+                  style="width: 50px; height: 40px"
+                  class="rounded-circle border border-1"
+                />
+                <b>@dsdsl</b>
+              </div>
+              <div class="card-body">
+                <img src="./assets/post.jpg" alt="" style="width: 100%" />
+                <h6>2 min ago</h6>
+                <h5>Hello</h5>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Maiores, ratione!
+                </p>
+                <hr />
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-pen"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"
+                    />
+                  </svg>
+                  <span>3 comments</span>
+                </div>
+              </div>
+            </div>
+            <div class="card shadow">
+              <div class="card-header">
+                <img
+                  src="./assets/avatar.jpg"
+                  alt=""
+                  style="width: 50px; height: 40px"
+                  class="rounded-circle border border-1"
+                />
+                <b>@dsdsl</b>
+              </div>
+              <div class="card-body">
+                <img src="./assets/post.jpg" alt="" style="width: 100%" />
+                <h6>2 min ago</h6>
+                <h5>Hello</h5>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Maiores, ratione!
+                </p>
+                <hr />
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-pen"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"
+                    />
+                  </svg>
+                  <span>3 comments</span>
+                </div>
+              </div>
+            </div>
+            <div class="card shadow">
+              <div class="card-header">
+                <img
+                  src="./assets/avatar.jpg"
+                  alt=""
+                  style="width: 50px; height: 40px"
+                  class="rounded-circle border border-1"
+                />
+                <b>@dsdsl</b>
+              </div>
+              <div class="card-body">
+                <img src="./assets/post.jpg" alt="" style="width: 100%" />
+                <h6>2 min ago</h6>
+                <h5>Hello</h5>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Maiores, ratione!
+                </p>
+                <hr />
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-pen"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"
+                    />
+                  </svg>
+                  <span>3 comments</span>
+                </div>
+              </div>
+            </div>
+            <div class="card shadow">
+              <div class="card-header">
+                <img
+                  src="./assets/avatar.jpg"
+                  alt=""
+                  style="width: 50px; height: 40px"
+                  class="rounded-circle border border-1"
+                />
+                <b>@dsdsl</b>
+              </div>
+              <div class="card-body">
+                <img src="./assets/post.jpg" alt="" style="width: 100%" />
+                <h6>2 min ago</h6>
+                <h5>Hello</h5>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Maiores, ratione!
+                </p>
+                <hr />
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-pen"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"
+                    />
+                  </svg>
+                  <span>3 comments</span>
+                </div>
+              </div>
+            </div>
+            <div class="card shadow">
+              <div class="card-header">
+                <img
+                  src="./assets/avatar.jpg"
+                  alt=""
+                  style="width: 50px; height: 40px"
+                  class="rounded-circle border border-1"
+                />
+                <b>@dsdsl</b>
+              </div>
+              <div class="card-body">
+                <img src="./assets/post.jpg" alt="" style="width: 100%" />
+                <h6>2 min ago</h6>
+                <h5>Hello</h5>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Maiores, ratione!
+                </p>
+                <hr />
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-pen"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"
+                    />
+                  </svg>
+                  <span>3 comments</span>
+                </div>
+              </div>
+            </div>
+            <div class="card shadow">
+              <div class="card-header">
+                <img
+                  src="./assets/avatar.jpg"
+                  alt=""
+                  style="width: 50px; height: 40px"
+                  class="rounded-circle border border-1"
+                />
+                <b>@dsdsl</b>
+              </div>
+              <div class="card-body">
+                <img src="./assets/post.jpg" alt="" style="width: 100%" />
+                <h6>2 min ago</h6>
+                <h5>Hello</h5>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Maiores, ratione!
+                </p>
+                <hr />
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-pen"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"
+                    />
+                  </svg>
+                  <span>3 comments</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--------->
+        </div>
+      </div>
+    </div>
+
+    <script src="./mainlogic.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>
