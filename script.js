@@ -127,7 +127,7 @@ ${editbuttonContent}
 //            <button type="button" class="btn btn-outline-success mx-2"   data-bs-toggle="modal" data-bs-target=     "#login-modal"   >
 
 const logi = document.getElementById("login-modal");
-const loglii = bootstrap.Modal.getInstance(logi); /// كود ثابت حفظ
+const loglii = bootstrap.Modal.getInstance(logi);
 loglii.hide(); /// to hide form
 showAlert("Login succefuly", "success"); /// estd3aa delet alert
 setupUi();
@@ -150,7 +150,7 @@ let isCreate=postId==null||postId==""   ///true or false
 const title = document.getElementById("post-title-input").value;
   const body = document.getElementById("post-body-input").value;
   const image = document.getElementById("post-image-input").files[0]; ///بمعنى اختيار عنصر واحد فقط [0]
-  const token = localStorage.getItem("token"); ///حفظ صم
+  const token = localStorage.getItem("token"); 
 
   let formData = new FormData(); ///// "body","title" from api but body,title el fard   const title,  const body  يمكن تغيير الفرض ولايمكن تغيير البيانات " " لانهم اسمهم كده فى ايه بى اى
   formData.append("body", body);
@@ -159,19 +159,19 @@ const title = document.getElementById("post-title-input").value;
 
   let url = ``;
   const headers = {
-    "Content-Type": "multipart/form-data", ///حفظ صم
-    authorization: `Bearer ${token}`, ///حفظ صم
+    "Content-Type": "multipart/form-data", 
+    authorization: `Bearer ${token}`,
   };
   if(isCreate){
      url = `${shorturl}/posts`;
      axios.post(url, formData, {
-      ///حفظ صم
-      headers: headers, ///حفظ صم
+    
+      headers: headers, 
     })
 
     .then((response) => {
       const logi = document.getElementById("creat-post-modal");
-      const loglii = bootstrap.Modal.getInstance(logi); /// كود ثابت حفظ
+      const loglii = bootstrap.Modal.getInstance(logi);
       loglii.hide();
       showAlert("posted succesfuly", "success");
       getposts();
@@ -186,12 +186,12 @@ const title = document.getElementById("post-title-input").value;
     url = `${shorturl}/posts/${postId}`;
     axios.post(url, formData, {
       ///حفظ صم
-      headers: headers, ///حفظ صم
+      headers: headers, 
     })
 
     .then((response) => {
       const logi = document.getElementById("creat-post-modal");
-      const loglii = bootstrap.Modal.getInstance(logi); /// كود ثابت حفظ
+      const loglii = bootstrap.Modal.getInstance(logi); 
       loglii.hide();
       showAlert("posted succesfuly", "success");
       getposts();
