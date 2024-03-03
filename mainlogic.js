@@ -41,25 +41,25 @@ postModal.toggle() //3ard elnamozag
 ///comfirm delete
 //        <button type="button" id="post-model-submit" class="btn btn-primary" onclick="comfirmepostdelete()">Delete</button>
 function comfirmepostdelete(){
-  const token = localStorage.getItem("token"); ///حفظ صم
+  const token = localStorage.getItem("token");
 
   //        <input type="text" id="delete-post-id-input" value="">
 const postId=document.getElementById("delete-post-id-input").value  
 const url = `${shorturl}/posts/${postId}`;
 const headers = {
-  "Content-Type": "multipart/form-data", ///حفظ صم
-  authorization: `Bearer ${token}`, ///حفظ صم
+  "Content-Type": "multipart/form-data", 
+  authorization: `Bearer ${token}`, 
 };
 
   axios.delete(url,{
-    headers: headers ///حفظ صم
+    headers: headers 
   
   })    ////amr hazf el dala api
 
   .then((response) => { 
     ///seve token user in localstorage
       const logi = document.getElementById("delete-post-modal");
-      const loglii = bootstrap.Modal.getInstance(logi); /// كود ثابت حفظ
+      const loglii = bootstrap.Modal.getInstance(logi); 
       loglii.hide();
       showAlert("posted has been deleted Successfuly", "success");
       getposts();
@@ -176,15 +176,15 @@ function registerbtnclick() {
   formData.append("image", image);
 
   const headers = {
-    "Content-Type": "multipart/form-data", ///حفظ صم
+    "Content-Type": "multipart/form-data",
   };
 
   const url = `${shorturl}/register`;
   toggleLoader(true) /// show loading before response
   
   axios.post(url, formData, {
-      ///حفظ صم
-      headers: headers, ///حفظ صم
+  
+      headers: headers,  
     })
 
     .then((response) => {
@@ -197,7 +197,7 @@ function registerbtnclick() {
       //            <button type="button" class="btn btn-outline-success mx-2"   data-bs-toggle="modal" data-bs-target=     "#login-modal"   >
 
       const logi = document.getElementById("register-modal");
-      const loglii = bootstrap.Modal.getInstance(logi); /// كود ثابت حفظ
+      const loglii = bootstrap.Modal.getInstance(logi);
       loglii.hide(); /// to hide form
       showAlert("ٌNew Register succefuly", "success"); ///// estd3aa delet alert
       setupUi();
